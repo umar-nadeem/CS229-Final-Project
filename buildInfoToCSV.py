@@ -8,18 +8,18 @@ def runCommands(name):
     # Use a breakpoint in the code line below to debug your script.
     # print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
     # os.system(f"echo Hello {name}")
-    os.chdir("/Users/sarahraza/bazel")
+    os.chdir("/Users/muhammadumarnadeem/bazel")
     # os.system("ls")
-    # print("'cd /Users/sarahraza/bazel' ran with exit code %d" % bazel_dir)
+    # print("'cd /Users/muhammadumarnadeem/bazel' ran with exit code %d" % bazel_dir)
     os.system(f"git checkout Head~1")
-    os.system(f"bazel build //src:bazel-dev --build_event_json_file=/Users/sarahraza/Desktop/Build_Info/{name}_commit.json")
+    os.system(f"bazel build //src:bazel-dev --build_event_json_file=/Users/muhammadumarnadeem/Desktop/Build_Info/{name}_commit.json")
 
 """
 def readJSONtoCSV(nCommits):
     # Use a breakpoint in the code line below to debug your script.
     # print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
     # os.system(f"echo Hello {name}")
-    os.chdir("/Users/sarahraza/Desktop/Build_Info")
+    os.chdir("/Users/muhammadumarnadeem/Desktop/Build_Info")
     for j in range(1, nCommits):
         f = open(f"{j}_commit.json")
         data = json.load(f)
