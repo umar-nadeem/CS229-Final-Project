@@ -1,39 +1,34 @@
-import os
 import json
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+import csv
+import pandas as pd
 
+# initialize data list with labels
+rowList = [["commitID", "CPUTime"]]
 
-def runCommands(name):
-    # Use a breakpoint in the code line below to debug your script.
-    # print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-    # os.system(f"echo Hello {name}")
-    os.chdir("/Users/muhammadumarnadeem/bazel")
-    # os.system("ls")
-    # print("'cd /Users/muhammadumarnadeem/bazel' ran with exit code %d" % bazel_dir)
-    os.system(f"git checkout Head~1")
-    os.system(f"bazel build //src:bazel-dev --build_event_json_file=/Users/muhammadumarnadeem/Desktop/Build_Info/{name}_commit.json")
+def extractData(commitID):
+    # read json into panda dataframe
+    filepath = "/Users/muhammadumarnadeem/CS229-Final-Project/Build_Info/" + str(commitID) + "_commit.json"
+    df = pd.read_json(filepath, lines=True)
+    
+    # extract cpuTime from dataframe
+    buildMetricColumn = df.get('buildMetrics')
+    buildMetricRow = buildMetricColumn.dropna()
+    actions = buildMetricRow.iloc[0]
+    timingInfo = actions['timingMetrics']
+    cpuTime = timingInfo['cpuTimeInMs']
+    
+    # append data to list
+    rowList.append([commitID, cpuTime])
 
-"""
-def readJSONtoCSV(nCommits):
-    # Use a breakpoint in the code line below to debug your script.
-    # print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-    # os.system(f"echo Hello {name}")
-    os.chdir("/Users/muhammadumarnadeem/Desktop/Build_Info")
-    for j in range(1, nCommits):
-        f = open(f"{j}_commit.json")
-        data = json.load(f)
-        for i in data ["id"]:
-            print(i)
-
-    f.close()
-"""
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    nCommits = 2
-    for i in range(1, nCommits):
-        runCommands(i)
-    # readJSONtoCSV(nCommits)
+    #extract CPU Rumtimes from json files
+    for i in range(1,2):
+        extractData(i)
+    for i in range(3,20):
+        extractData(i)
+    
+    # Write CPU Rumtimes into csv file
+    with open('CPUTimes.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(rowList)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
