@@ -24,9 +24,7 @@ def extractData(commitID):
 
 if __name__ == '__main__':
     # extract CPU Rumtimes from json files
-    for i in range(1, 2):
-        extractData(i)
-    for i in range(3, 20):
+    for i in range(1, 501):
         extractData(i)
 
     # Write CPU Rumtimes into csv file

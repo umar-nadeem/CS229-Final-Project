@@ -19,6 +19,7 @@ def getPrefix(gitDiff):
     
     # add selection between two equivalent counts
     return max(dict, key=dict.get)
+    # no tie breaker
 
 def getType(gitDiff):
     dict = {}
@@ -38,6 +39,7 @@ def getType(gitDiff):
     
     # add other category for file types
     return max(dict, key=dict.get)
+    # no other category
 
 def parseCommits(name):
     # move to bazel project
@@ -54,7 +56,6 @@ def parseCommits(name):
 
     # append commit information to list
     rowList.append([id, prefix, type])
-    print(rowList)
 
     # pull JSON files from bazel build info
     os.system(f"bazel build //src:bazel-dev --build_event_json_file=/Users/muhammadumarnadeem/CS229-Final-Project/Build_Info/{name}_commit.json")
@@ -65,7 +66,7 @@ def parseCommits(name):
 
 if __name__ == '__main__':
     # extract JSON files (for CPUTimes) and InputData from Commits
-    numCommits = 101
+    numCommits = 501
     for i in range(1, numCommits):
         parseCommits(i)
     
