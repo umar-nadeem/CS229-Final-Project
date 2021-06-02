@@ -1,49 +1,9 @@
 import os
 import csv
-import pandas as pd
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 
-# df = pd.DataFrame({"ID": [],
-#                   "prefix": [],
-#                   "type": []})
 rowList = [["ID", "prefix", "type"]]
 
-def runCommands(name):
-    # Use a breakpoint in the code line below to debug your script.
-    # print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-    # os.system(f"echo Hello {name}")
-    os.chdir("/Users/sarahraza/bazel")
-    # os.system("ls")
-    # print("'cd /Users/sarahraza/bazel' ran with exit code %d" % bazel_dir)
-    os.system(f"git checkout HEAD~1")
-    id = os.popen("git rev-parse --short HEAD").read()
-    gitDiff = os.popen("git diff HEAD~1..HEAD --name-only").read()
-    prefix = getPrefix(gitDiff)
-    type = getType(gitDiff)
-    # df3 = pd.DataFrame({"ID": [id],
-    #                   "prefix": [prefix],
-    #                    "type": [type]})
-    # global df
-    # df.append(df3, ignore_index=True)
-    rowList.append([id, prefix, type])
-    print(rowList)
-    os.system(f"bazel build //src:bazel-dev --build_event_json_file=/Users/sarahraza/Desktop/Build_Info/{name}_commit.json") #only local locations work?
-
-
 def getPrefix(gitDiff):
-    """"
-    prefix = ""
-    slash = False
-    for letter in gitDiff:
-        if letter == '/':
-            if not slash:
-                slash = True
-            else:
-                break
-        prefix += letter
-    return prefix
-    """
     dict = {}
     dict["bazelci/"] = gitDiff.count("bazelci/")
     dict["examples/"] = gitDiff.count("examples/")
@@ -56,6 +16,7 @@ def getPrefix(gitDiff):
     dict["src/tools"] = gitDiff.count("src/tools")
     dict["third_party/"] = gitDiff.count("third_party/")
     dict["tools/"] = gitDiff.count("tools/")
+    
     # add selection between two equivalent counts
     return max(dict, key=dict.get)
 
@@ -74,20 +35,41 @@ def getType(gitDiff):
     dict["HTML/CSS/JS"] = gitDiff.count(".html")
     dict["HTML/CSS/JS"] += gitDiff.count(".css")
     dict["HTML/CSS/JS"] += gitDiff.count(".js")
+    
     # add other category for file types
     return max(dict, key=dict.get)
 
+def parseCommits(name):
+    # move to bazel project
+    os.chdir("/Users/muhammadumarnadeem/bazel")
 
-# Press the green button in the gutter to run the script.
+    # obtain information about last commit
+    os.system(f"git checkout HEAD~1")
+    id = os.popen("git rev-parse --short HEAD").read()
+    idLength = len(id)
+    id = id[1:idLength-1]
+    gitDiff = os.popen("git diff HEAD~1..HEAD --name-only").read()
+    prefix = getPrefix(gitDiff)
+    type = getType(gitDiff)
+
+    # append commit information to list
+    rowList.append([id, prefix, type])
+    print(rowList)
+
+    # pull JSON files from bazel build info
+    os.system(f"bazel build //src:bazel-dev --build_event_json_file=/Users/muhammadumarnadeem/CS229-Final-Project/Build_Info/{name}_commit.json")
+    
+    # move back to local project
+    os.chdir("/Users/muhammadumarnadeem/CS229-Final-Project")
+
+
 if __name__ == '__main__':
-    nCommits = 2
-    for i in range(1, nCommits):
-        runCommands(i)
-    # readJSONtoCSV(nCommits)
-    # global df
-    # df.to_csv(r'/Users/sarahraza/Desktop/data.csv', index=False, header=True)
+    # extract JSON files (for CPUTimes) and InputData from Commits
+    numCommits = 101
+    for i in range(1, numCommits):
+        parseCommits(i)
+    
+    # Write InputData into csv file
     with open('InputData.csv', 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerows(rowList)
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
