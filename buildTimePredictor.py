@@ -59,7 +59,7 @@ def train_model(learning_rate, steps, batch_size, feature_columns, training_exam
 
     # create a linear regressor object
     linear_regressor = tf.estimator.LinearRegressor(
-        feature_columns=feature_columns, optimizer='Ftrl')
+        feature_columns=feature_columns, optimizer='SGD')
 
     def training_input_fn(): return my_input_fn(training_examples, training_targets['CPUTime'],
                                                 batch_size=batch_size)
@@ -212,7 +212,7 @@ if __name__ == '__main__':
     train_model(
         learning_rate=1.0,
         steps=500,
-        batch_size=100,
+        batch_size=16,
         feature_columns=construct_feature_columns(),
         training_examples=training_examples,
         training_targets=training_targets,
@@ -222,7 +222,7 @@ if __name__ == '__main__':
     test_model(
         learning_rate=1.0,
         steps=500,
-        batch_size=100,
+        batch_size=16,
         feature_columns=construct_feature_columns(),
         testing_examples=testing_examples,
         testing_targets=testing_targets)
